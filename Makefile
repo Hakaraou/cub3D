@@ -6,7 +6,7 @@
 #    By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/26 10:44:54 by hakaraou          #+#    #+#              #
-#    Updated: 2024/08/26 16:32:10 by hakaraou         ###   ########.fr        #
+#    Updated: 2024/08/27 14:07:46 by hakaraou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,13 @@ NAME = cub3D
 
 B_NAME = cub3d_bonus
 
-SRC = mandatory/main.c \
+SRC = mandatory/ft_write_test.c \
+	mandatory/main.c \
 	mandatory/pars/get_next_line.c mandatory/pars/get_next_line_utils.c \
-	mandatory/utils/libft_str.c mandatory/utils/libft_ptr.c \
+	mandatory/pars/ft_pars.c mandatory/pars/set_param.c\
+	mandatory/utils/libft_str.c mandatory/utils/libft_ptr_0.c mandatory/utils/libft_ptr_1.c \
+	mandatory/utils/cond.c \
+	
 
 H_SRC = mandatory/cub3d.h mandatory/pars/get_next_line.h
 

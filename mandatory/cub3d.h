@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:43:13 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/26 19:28:23 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:28:48 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,12 @@ typedef enum e_id
 	E_EA
 }	t_id;
 
-
 typedef struct s_color
 {
 	int	red;
 	int	blue;
 	int	green;
 }		t_color;
-
-// typedef struct s_floor
-// {
-// 	t_color	*color;
-// }			t_floor;
-
-// typedef struct s_ceiling
-// {
-// 	t_color	*color;
-// }			t_ceiling;
 
 typedef struct s_texture
 {
@@ -62,15 +51,26 @@ typedef struct s_map
 	t_type	value;
 }		t_map;
 
-typedef struct s_param
+typedef struct s_cub
 {
 	t_texture	texture[4];
-	t_color		*floor;
-	t_color		*ceiling;
+	t_color		floor;
+	t_color		ceiling;
 	t_map		**map;
-}				t_param;
+}				t_cub;
 
 void	ft_putendl_fd(char *s, int fd);
 char	*ft_strdup(const char *s1);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+int		is_white_space(char c);
+int		ft_pars(t_cub *cub, char *name_file);
+char	*ft_strtrim(char *s1);
+int		ft_atoi(char *str);
+int		set_floor_ceiling(t_cub *cub, char *line);
+int		set_texture(t_texture *texture, char *line);
+
+
+void ft_write_cub(t_cub *cub);
 
 #endif
