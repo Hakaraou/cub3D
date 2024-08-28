@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:43:13 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/27 14:28:48 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/28 12:23:26 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 typedef enum e_type
 {
+	E_VOID,
 	E_EMPTY,
 	E_BLOCK,
 	E_PLAYER
@@ -49,7 +50,13 @@ typedef struct s_texture
 typedef struct s_map
 {
 	t_type	value;
-}		t_map;
+}			t_map;
+
+typedef struct s_line_map
+{
+	char				*line_map;
+	struct s_line_map	*next;
+}				t_line_map;
 
 typedef struct s_cub
 {
@@ -57,6 +64,12 @@ typedef struct s_cub
 	t_color		floor;
 	t_color		ceiling;
 	t_map		**map;
+	t_line_map	*line_map;
+	size_t		height;
+	size_t		width;
+	size_t		ofset_front;
+	size_t		ofset_back;
+	int			fd;
 }				t_cub;
 
 void	ft_putendl_fd(char *s, int fd);
@@ -69,6 +82,13 @@ char	*ft_strtrim(char *s1);
 int		ft_atoi(char *str);
 int		set_floor_ceiling(t_cub *cub, char *line);
 int		set_texture(t_texture *texture, char *line);
+int		set_line_map(t_line_map **line_map, char *line);
+void	free_cub(t_cub *cub);
+void	free_texture(t_cub *cub);
+void	free_line_map(t_line_map **line_map);
+int		ft_ofset_back(char *line);
+int		ft_ofset_front(char *line);
+int		creat_map(t_cub *cub);
 
 
 void ft_write_cub(t_cub *cub);
