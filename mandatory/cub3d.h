@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:43:13 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/28 12:23:26 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/29 14:16:06 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdio.h>
+# include "../MLX42.h"
 
 typedef enum e_type
 {
@@ -89,7 +90,8 @@ void	free_line_map(t_line_map **line_map);
 int		ft_ofset_back(char *line);
 int		ft_ofset_front(char *line);
 int		creat_map(t_cub *cub);
-
+int		check_texture(t_texture *texture);
+int		check_colors(t_color *floor, t_color *ceiling);
 
 void ft_write_cub(t_cub *cub);
 

@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:51:32 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/28 16:17:50 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/29 11:40:23 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,12 @@ static int	set_param(t_cub *cub, char *line, int i)
 
 	if (i < 5 && set_texture(&cub->texture[i - 1], line) == -1)
 		return (-1);
+	if (i == 5 && check_texture(cub->texture) == -1)
+		return (free_texture(cub), -1);
 	if (i > 4 && i < 7 && set_floor_ceiling(cub, line) == -1)
 		return (-1);
+	if (i == 6 && check_colors(&cub->floor, &cub->ceiling) == -1)
+		return (free_texture(cub), ft_putendl_fd("ERROR", 2), -1);
 	if (i > 6)
 	{
 		len = ft_ofset_front(line);
@@ -41,7 +45,7 @@ static int	set_param(t_cub *cub, char *line, int i)
 		if (cub->ofset_back < len)
 			cub->ofset_back = len;
 		if (set_line_map(&cub->line_map, line) == -1)
-			return (-1);
+			return (free_texture(cub), -1);
 	}
 	return (0);
 }
@@ -98,11 +102,17 @@ int	ft_pars(t_cub *cub, char *name_file)
 	cub->ofset_front = 0;
 	cub->ofset_back = 0;
 	cub->line_map = NULL;
+	cub->floor.red = -1;
+	cub->floor.blue = -1;
+	cub->floor.green = -1;
+	cub->ceiling.red = -1;
+	cub->ceiling.blue = -1;
+	cub->ceiling.green = -1;
 	if (creat_cub(cub, name_file) == -1)
-		return (-1);
+		return (free_line_map(&cub->line_map), -1);
 	cub->width = cub->ofset_back - cub->ofset_front + 1;
 	if (creat_map(cub) == -1)
-		return (free_line_map(&cub->line_map), -1);
+		return (free_texture(cub), free_line_map(&cub->line_map), -1);
 	free_line_map(&cub->line_map);
 	return (0);
 }
