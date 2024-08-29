@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:51:32 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/29 11:40:23 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/29 20:17:28 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,12 @@ static int	creat_cub(t_cub *cub, char *name_file)
 			if (!line_map_file)
 				return (ft_putendl_fd("error: malloc", 2), -1);
 		}
+		if (i >= 7)
+		{
+			line_map_file = ft_back_strtrim(line_map_file);
+			if (!line_map_file)
+				return (ft_putendl_fd("error: malloc", 2), -1);
+		}
 		else if (i > 7)
 		{
 			if (is_line_space(line_map_file))
@@ -108,11 +114,14 @@ int	ft_pars(t_cub *cub, char *name_file)
 	cub->ceiling.red = -1;
 	cub->ceiling.blue = -1;
 	cub->ceiling.green = -1;
+	cub->map = NULL;
 	if (creat_cub(cub, name_file) == -1)
 		return (free_line_map(&cub->line_map), -1);
 	cub->width = cub->ofset_back - cub->ofset_front + 1;
 	if (creat_map(cub) == -1)
 		return (free_texture(cub), free_line_map(&cub->line_map), -1);
 	free_line_map(&cub->line_map);
+	if (pars_map(cub) == -1)
+		return (free_cub(cub) , -1);
 	return (0);
 }

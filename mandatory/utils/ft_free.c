@@ -6,11 +6,11 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 16:24:48 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/28 16:20:08 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/29 18:57:12 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../cub3d.h"
 
 void	free_texture(t_cub *cub)
 {
@@ -44,7 +44,8 @@ void	free_line_map(t_line_map **line_map)
 
 void	free_map(t_map **map, t_cub *cub)
 {
-	size_t	i = 0;
+	size_t	i;
+
 	i = cub->height;
 	while (i-- > 0)
 		free(map[i]);
