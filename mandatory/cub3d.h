@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:43:13 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/29 19:52:37 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/30 11:10:38 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,14 +90,13 @@ int		set_line_map(t_line_map **line_map, char *line);
 void	free_cub(t_cub *cub);
 void	free_texture(t_cub *cub);
 void	free_line_map(t_line_map **line_map);
-int		ft_ofset_back(char *line);
 int		ft_ofset_front(char *line);
 int		creat_map(t_cub *cub);
 int		check_texture(t_texture *texture);
 int		check_colors(t_color *floor, t_color *ceiling);
 int		ft_strcmp(char *s1, char *s2);
 int		check_file_name(char *file);
-void	free_map(t_map **map, t_cub *cub);
+void	free_map(t_cub *cub);
 int		pars_map(t_cub *cub);
 int		is_player(t_type value);
 char	*ft_back_strtrim(char *s1);

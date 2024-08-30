@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:51:32 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/29 20:17:28 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/08/30 11:27:06 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	set_param(t_cub *cub, char *line, int i)
 		len = ft_ofset_front(line);
 		if (cub->ofset_front > len)
 			cub->ofset_front = len;
-		len = ft_ofset_back(line);
+		len = ft_strlen(line) - 1;
 		if (cub->ofset_back < len)
 			cub->ofset_back = len;
 		if (set_line_map(&cub->line_map, line) == -1)
@@ -70,8 +70,6 @@ static int	creat_cub(t_cub *cub, char *name_file)
 			break ;
 		if (i <= 7 && is_line_space(line_map_file))
 			continue ;
-		if (i == 7)
-			cub->ofset_front = ft_ofset_front(line_map_file);
 		if (i < 7)
 		{
 			line_map_file = ft_strtrim(line_map_file);
@@ -83,16 +81,18 @@ static int	creat_cub(t_cub *cub, char *name_file)
 			line_map_file = ft_back_strtrim(line_map_file);
 			if (!line_map_file)
 				return (ft_putendl_fd("error: malloc", 2), -1);
-		}
-		else if (i > 7)
-		{
-			if (is_line_space(line_map_file))
+			if (i == 7)
+				cub->ofset_front = ft_ofset_front(line_map_file);
+			if (i > 7)
 			{
-				endl = 1;
-				continue ;
+				if (is_line_space(line_map_file))
+				{
+					endl = 1;
+					continue ;
+				}
+				if (!is_line_space(line_map_file) && endl == 1)
+					return (ft_putendl_fd("ERROR", 2), free(line_map_file), -1);
 			}
-			if (!is_line_space(line_map_file) && endl == 1)
-				return (ft_putendl_fd("ERROR", 2), free(line_map_file), -1);
 		}
 		if (set_param(cub, line_map_file, i) == -1)
 			return (free(line_map_file), -1);
@@ -119,7 +119,7 @@ int	ft_pars(t_cub *cub, char *name_file)
 		return (free_line_map(&cub->line_map), -1);
 	cub->width = cub->ofset_back - cub->ofset_front + 1;
 	if (creat_map(cub) == -1)
-		return (free_texture(cub), free_line_map(&cub->line_map), -1);
+		return (free_line_map(&cub->line_map), -1);
 	free_line_map(&cub->line_map);
 	if (pars_map(cub) == -1)
 		return (free_cub(cub) , -1);
