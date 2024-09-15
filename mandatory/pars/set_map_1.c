@@ -6,37 +6,47 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 12:01:01 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/09/02 16:53:42 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/09/15 15:57:27 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cub3d.h"
 
-static t_type	set_type_block_1(char c, t_cub *cub)
+static t_type	set_typM_WALL_1(char c, t_cub *cub)
 {
 	if (c == ' ')
-		return (E_VOID);
-	if (c == '0')
-		return (E_EMPTY);
-	if (c == '1')
-		return (E_BLOCK);
-	if (c == 'W')
-		return (cub->player_dir = M_PI, E_PLAYER_W);
-	if (c == 'S')
-		return (cub->player_dir = (M_PI * 0.5),E_PLAYER_S);
-	if (c == 'E')
-		return (cub->player_dir = 0, E_PLAYER_E);
-	if (c == 'N')
-		return (cub->player_dir = (M_PI * 1.5), E_PLAYER_N);
+		return (M_VOID);
+	else if (c == '0')
+		return (M_FLOOR);
+	else if (c == '1')
+		return (M_WALL);
+	else if (c == 'W')
+		return (cub->direction.x = -1, cub->cam_plane.y = -0.66, M_PLAYER);
+	else if (c == 'S')
+		return (cub->direction.y = 1, cub->cam_plane.x = -0.66, M_PLAYER);
+	else if (c == 'E')
+		return (cub->direction.x = 1, cub->cam_plane.y = 0.66, M_PLAYER);
+	else if (c == 'N')
+		return (cub->direction.y = -1, cub->cam_plane.x = 0.66, M_PLAYER);
 	else
-		return (9);
+		return (M_ERROR);
 }
 
-static t_type	set_type_block_0(char c, t_cub *cub)
+static t_type	set_typM_WALL_0(char c, t_cub *cub)
 {
 	if (c != '\n')
-		return (set_type_block_1(c, cub));
-	return (set_type_block_1(' ', cub));
+		return (set_typM_WALL_1(c, cub));
+	return (set_typM_WALL_1(' ', cub));
+}
+
+void	pos_player(t_cub *cub, t_type type, int x, int y)
+{
+	if (type == M_PLAYER)
+	{
+		cub->tile_size = 200 / cub->height;
+		cub->pos.x = (x + 0.5) * cub->tile_size;
+		cub->pos.y = (y + 0.5) * cub->tile_size;
+	}
 }
 
 static int	put_map(t_cub *cub)
@@ -54,13 +64,13 @@ static int	put_map(t_cub *cub)
 		k = -1;
 		while (tmp->line_map[i] && ++k < cub->width)
 		{
-			cub->map[j][k].value = set_type_block_0(tmp->line_map[i], cub);
-			if (cub->map[j][k].value == 9)
+			cub->map[j][k].value = set_typM_WALL_0(tmp->line_map[i++], cub);
+			pos_player(cub, cub->map[j][k].value, k, j);
+			if (cub->map[j][k].value == M_ERROR)
 				return (-1);
-			i++;
 		}
 		while (++k < cub->width)
-			cub->map[j][k].value = set_type_block_1(' ', cub);
+			cub->map[j][k].value = set_typM_WALL_1(' ', cub);
 		j++;
 		tmp = tmp->next;
 	}
@@ -83,6 +93,6 @@ int	creat_map(t_cub *cub)
 		i++;
 	}
 	if (put_map(cub) == -1)
-		return (free_cub(cub), ft_putendl_fd("ERROR", 2), -1);
+		return (free_cub(cub), ft_putendl_fd("ERROR7", 2), -1);
 	return (0);
 }

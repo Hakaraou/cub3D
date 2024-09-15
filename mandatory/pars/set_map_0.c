@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_map_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayyassif <ayyassif@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 15:58:40 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/30 13:05:08 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/09/12 16:34:43 by ayyassif         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,7 @@ void	set_cub(t_cub *cub)
 	cub->ceiling.green = -1;
 	cub->map = NULL;
 	cub->endl = 0;
+	cub->pressed_down.frwd_bckwd = 0;
+	cub->pressed_down.left_right = 0;
+	cub->pressed_down.turn_left_right = 0;
 }

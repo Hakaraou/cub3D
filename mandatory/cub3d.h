@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayyassif <ayyassif@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:43:13 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/09/02 12:45:44 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/09/14 12:19:08 by ayyassif         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,14 @@
 # include "../MLX42.h"
 # include <math.h>
 
-# define WIDTH 955
-# define HEIGHT 800
-# define LEFT_KEY 0
-# define RIGHT_KEY 2
-# define UP_KEY 13
-# define DOWN_KEY 1
+# define WIDTH 960
+# define HEIGHT 720
+
+# define SPEED 50
+# define ROT_ANG 2
 
 //tmp
-# define TILE_SIZE 80
+# define TILE_SIZE 20
 
 typedef struct s_s_map
 {
@@ -38,19 +37,17 @@ typedef struct s_s_map
 
 typedef struct s_vec
 {
-	size_t	x;
-	size_t	y;
+	double	x;
+	double	y;
 }	t_vec;
 
 typedef enum e_type
 {
-	E_EMPTY,
-	E_BLOCK,
-	E_PLAYER_W,
-	E_PLAYER_S,
-	E_PLAYER_E,
-	E_PLAYER_N,
-	E_VOID
+	M_FLOOR,
+	M_WALL,
+	M_PLAYER,
+	M_VOID,
+	M_ERROR
 }	t_type;
 
 typedef enum e_id
@@ -79,6 +76,14 @@ typedef struct s_map
 	t_type	value;
 }			t_map;
 
+typedef struct s_pressed_down
+{
+	int	frwd_bckwd;
+	int	left_right;
+	int	turn_left_right;
+}		t_prsd_dwn;
+
+
 typedef struct s_line_map
 {
 	char				*line_map;
@@ -100,7 +105,11 @@ typedef struct s_cub
 	int			endl;
 	t_s_map		s_map;
 	t_vec		pos;
-	double		player_dir;
+	t_vec		direction;
+	t_prsd_dwn	pressed_down;
+	t_vec		cam_plane;
+	int			line_color;
+	int			tile_size;
 }				t_cub;
 
 int		ft_pars(t_cub *cub, char *name_file);
@@ -129,14 +138,20 @@ void	free_texture(t_cub *cub);
 void	free_line_map(t_line_map **line_map);
 void	free_cub(t_cub *cub);
 
-int		is_player(t_type value);
 int		is_white_space(char c);
 
 void	ft_write_cub(t_cub *cub);
 
 //-------------------------------------------------------------
 
-int		mini_map(t_cub *cub);
+int		execution(t_cub *cub);
+void	loop_hook(void *v_cub);
+void	ray_casting(t_cub *cub, double perp_wall_dist);
+void	draw_square(t_cub *cub, int x, int y, int color);
+void	player_square_draw(t_cub *cub);
+void	dda(t_vec pos, t_vec vec, t_cub *cub, int color);
+void	ver_line(t_cub *cub, int drawStart, int drawEnd, int x);
+int		create_rgb(int r, int g, int b);
 
 //----------------------------------------------------------------
 

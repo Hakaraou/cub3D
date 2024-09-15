@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:51:32 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/08/30 13:04:38 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/09/15 18:10:11 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	creat_cub_1(t_cub *cub)
 		if (i == 7)
 			cub->ofset_front = ft_ofset_front(line_map_file);
 		if (i > 7 && !is_line_space(line_map_file, i, cub) && cub->endl == 1)
-			return (free_texture(cub), ft_putendl_fd("ERROR", 2),
+			return (free_texture(cub), ft_putendl_fd("ERROR: more lines", 2),
 				free(line_map_file), -1);
 		if (set_param(cub, line_map_file, i++) == -1)
 			return (free_texture(cub), free(line_map_file), -1);
@@ -75,9 +75,15 @@ static int	creat_cub_0(t_cub *cub, char *name_file)
 int	ft_pars(t_cub *cub, char *name_file)
 {
 	set_cub(cub);
+	cub->direction.x = 0;
+	cub->direction.y = 0;
+	cub->cam_plane.x = 0;
+	cub->cam_plane.y = 0;
 	if (creat_cub_0(cub, name_file) == -1)
 		return (free_line_map(&cub->line_map), -1);
 	cub->width = cub->ofset_back - cub->ofset_front + 1;
+	if (cub->height == 0)
+		return (free_line_map(&cub->line_map), ft_putendl_fd("ERROR: messing map", 2), -1);
 	if (creat_map(cub) == -1)
 		return (free_line_map(&cub->line_map), -1);
 	free_line_map(&cub->line_map);
