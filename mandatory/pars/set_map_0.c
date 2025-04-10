@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 15:58:40 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/09/24 18:01:56 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/11/21 19:19:15 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	set_line_map(t_line_map **line_map, char *line)
 		return (1);
 	node = malloc(sizeof(t_line_map));
 	if (!node)
-		return (ft_putendl_fd("error: malloc", 2), -1);
+		return (ft_putendl_fd("Error:\nmalloc", 2), -1);
 	node->next = NULL;
 	node->line_map = ft_strdup(line);
 	if (!node->line_map)
@@ -53,6 +53,15 @@ int	ft_ofset_front(char *line)
 	while (line[i] && is_white_space(line[i]))
 		i++;
 	return (i);
+}
+
+static void	set_cub_0(t_cub *cub)
+{
+	cub->tex_id = 0;
+	cub->direction.x = 0;
+	cub->direction.y = 0;
+	cub->cam_plane.x = 0;
+	cub->cam_plane.y = 0;
 }
 
 void	set_cub(t_cub *cub)
@@ -81,5 +90,5 @@ void	set_cub(t_cub *cub)
 	cub->pressed_down.frwd_bckwd = 0;
 	cub->pressed_down.left_right = 0;
 	cub->pressed_down.turn_left_right = 0;
-	cub->tex_id = 0;
+	set_cub_0(cub);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray_casting.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayyassif <ayyassif@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 10:24:48 by ayyassif          #+#    #+#             */
-/*   Updated: 2024/09/26 21:21:38 by ayyassif         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:12:17 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,30 @@ static t_vec	side_dist_setter(t_vec ray, t_vec *map_cords,
 	return (side_dist);
 }
 
-static void	ray_dda(t_cub *cub, t_vec map_cords)
+static void	ray_dda(t_cub *cub, t_vec m_crds)
 {
 	t_vec	step;
+	size_t	i;
 
-	cub->side_dist = side_dist_setter(cub->ray, &map_cords,
+	cub->side_dist = side_dist_setter(cub->ray, &m_crds,
 			cub->delta_dist, &step);
-	while (1)
+	i = 0;
+	while (++i)
 	{
 		if (cub->side_dist.x < cub->side_dist.y)
 		{
 			cub->side_dist.x += cub->delta_dist.x;
-			map_cords.x += step.x;
+			m_crds.x += step.x;
 			cub->side = 0;
 		}
 		else
 		{
 			cub->side_dist.y += cub->delta_dist.y;
-			map_cords.y += step.y;
+			m_crds.y += step.y;
 			cub->side = 1;
 		}
-		if (cub->map[(int)map_cords.y][(int)map_cords.x].value == M_WALL)
-			break ;
+		if (cub->map[(int)m_crds.y][(int)m_crds.x] == M_WALL)
+			return ;
 	}
 }
 
@@ -111,6 +113,7 @@ void	ray_casting(t_cub *cub)
 	int		drawend;
 
 	cub->x = -1;
+	cub->perp_wall_dist = 0;
 	while (++cub->x < WIDTH)
 	{
 		camera_x = 2 * cub->x / (double)WIDTH - 1;

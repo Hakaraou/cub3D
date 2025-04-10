@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_map_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayyassif <ayyassif@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 12:01:01 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/09/26 21:21:18 by ayyassif         ###   ########.fr       */
+/*   Updated: 2024/11/21 19:19:57 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,13 @@ static int	put_map(t_cub *cub)
 		k = -1;
 		while (tmp->line_map[i] && ++k < cub->width)
 		{
-			cub->map[j][k].value = set_type_map_0(tmp->line_map[i++], cub);
-			pos_player(cub, cub->map[j][k].value, k, j);
-			if (cub->map[j][k].value == M_ERROR)
+			cub->map[j][k] = set_type_map_0(tmp->line_map[i++], cub);
+			pos_player(cub, cub->map[j][k], k, j);
+			if (cub->map[j][k] == M_ERROR)
 				return (-1);
 		}
 		while (++k < cub->width)
-			cub->map[j][k].value = set_type_map_1(' ', cub);
+			cub->map[j][k] = set_type_map_1(' ', cub);
 		j++;
 		tmp = tmp->next;
 	}
@@ -81,17 +81,17 @@ int	creat_map(t_cub *cub)
 	size_t	i;
 
 	i = 0;
-	cub->map = malloc(sizeof(t_map *) * cub->height);
+	cub->map = malloc(sizeof(t_type *) * cub->height);
 	if (!cub->map)
-		return (free_texture(cub), ft_putendl_fd("error: malloc", 2), -1);
+		return (ft_putendl_fd("Error:\nmalloc", 2), -1);
 	while (i < cub->height)
 	{
-		cub->map[i] = malloc(sizeof(t_map) * cub->width);
+		cub->map[i] = malloc(sizeof(t_type) * cub->width);
 		if (!cub->map[i])
-			return (free_cub(cub), ft_putendl_fd("error: malloc", 2), -1);
+			return (ft_putendl_fd("Error:\nmalloc", 2), -1);
 		i++;
 	}
 	if (put_map(cub) == -1)
-		return (free_cub(cub), ft_putendl_fd("ERROR:\n\tmap error", 2), -1);
+		return (ft_putendl_fd("Error:\nmap error", 2), -1);
 	return (0);
 }

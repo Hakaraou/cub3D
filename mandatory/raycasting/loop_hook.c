@@ -6,100 +6,25 @@
 /*   By: ayyassif <ayyassif@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 10:05:44 by ayyassif          #+#    #+#             */
-/*   Updated: 2024/09/27 18:05:44 by ayyassif         ###   ########.fr       */
+/*   Updated: 2024/11/22 11:37:34 by ayyassif         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cub3d.h"
 
-static void	draw_s_map(t_cub *cub)
+static int	fill_window(t_cub *cub)
 {
-	t_vec	start;
-	t_vec	end;
-	t_vec	tmp;
-
-	start.x = cub->pos.x / TILE_SIZE - M_MAP;
-	start.y = cub->pos.y / TILE_SIZE - M_MAP;
-	end.x = cub->pos.x / TILE_SIZE + M_MAP;
-	end.y = cub->pos.y / TILE_SIZE + M_MAP;
-	tmp.y = start.y;
-	while (tmp.y < end.y)
-	{
-		tmp.x = start.x;
-		while (tmp.x < end.x)
-		{
-			if (tmp.y >= 0 && tmp.y <= cub->height
-				&& tmp.x >= 0 && tmp.x <= cub->width)
-			{
-				if (cub->map[(int)tmp.y][(int)tmp.x].value == M_FLOOR)
-					draw_square(cub, ((int)tmp.x - start.x + 1) * TILE_SIZE,
-						((int)tmp.y - start.y + 1) * TILE_SIZE, create_rgb(cub->floor.red, cub->floor.green, cub->floor.blue));
-				if (cub->map[(int)tmp.y][(int)tmp.x].value == M_WALL)
-					draw_square(cub, ((int)tmp.x - start.x + 1) * TILE_SIZE,
-						((int)tmp.y - start.y + 1) * TILE_SIZE, create_rgb(100, 150, 100));
-			}
-			tmp.x++;
-		}
-		tmp.y++;
-	}
-	player_square_draw(cub);
+	mlx_delete_image(cub->mlx.mlx_handle, cub->mlx.img);
+	cub->mlx.img = mlx_new_image(cub->mlx.mlx_handle, WIDTH, HEIGHT);
+	if (!cub->mlx.img)
+		return (-1);
+	ray_casting(cub);
+	if (mlx_image_to_window(cub->mlx.mlx_handle, cub->mlx.img, 0, 0))
+		return (-1);
+	return (0);
 }
 
-static void	wall_coll(t_cub *cub, t_vec new_pos, t_vec map_cords)
-{
-	t_vec	d;
-	t_vec	inc;
-	double	step;
-	int		i;
-
-	d.x = (new_pos.x - cub->pos.x) / (double)TILE_SIZE;
-	d.y = (new_pos.y - cub->pos.y) / (double)TILE_SIZE;
-	step = fmax(fabs(d.x), fabs(d.y));
-	inc.x = (d.x / step) / (double)TILE_SIZE;
-	inc.y = (d.y / step) / (double)TILE_SIZE;
-	d.x = new_pos.x / (double)TILE_SIZE;
-	d.y = new_pos.y / (double)TILE_SIZE;
-	i = -1;
-	while (++i < step)
-	{
-		if (cub->map[(int)d.y][(int)map_cords.x].value != M_WALL)
-			d.y += inc.y;
-		if (cub->map[(int)map_cords.y][(int)d.x].value != M_WALL)
-			d.x += inc.x;
-	}
-	if (cub->map[(int)d.y][(int)map_cords.x].value != M_WALL)
-		cub->pos.y = new_pos.y;
-	if (cub->map[(int)map_cords.y][(int)d.x].value != M_WALL)
-		cub->pos.x = new_pos.x;
-}
-void	map_background(t_cub *cub)
-{
-	mlx_texture_t* texture = mlx_load_png("mandatory/textures/map_frame.png");
-	int	map_height;
-	int	map_width;
-	
-	map_height = 11 * TILE_SIZE;
-	map_width = 11 * TILE_SIZE;
-	if (!texture)
-		exit(1);
-	int	y = -1;
-	while (++y < map_height)
-	{
-		int	x = -1;
-			double t_y = y / (double)map_height;
-			t_y *= texture->height;
-		while (++x < map_width)
-		{
-			double t_x = x / (double)map_width;
-			t_x *= texture->width;
-			int index = ((int)t_y * texture->width + (int)t_x) * 4;
-			if (texture->pixels[index + 4] != 0)
-				ft_put_pixel(cub->s_map.img_s_map, x, y, color_from_pixel(texture, index));
-		}
-	}
-}
-
-static void	move_process(t_cub *cub, t_vec *velo)
+static void	move_process(t_cub *cub, t_vec velo)
 {
 	t_vec	new_pos;
 	double	move_speed;
@@ -107,21 +32,10 @@ static void	move_process(t_cub *cub, t_vec *velo)
 
 	map_cords.x = cub->pos.x / TILE_SIZE;
 	map_cords.y = cub->pos.y / TILE_SIZE;
-	if (velo)
-	{
-		move_speed = SPEED * cub->s_map.mlx_s_map->delta_time;
-		new_pos.x = cub->pos.x + velo->x * move_speed;
-		new_pos.y = cub->pos.y + velo->y * move_speed;
-		wall_coll(cub, new_pos, map_cords);
-	}
-	mlx_delete_image(cub->s_map.mlx_s_map, cub->s_map.img_s_map);
-	cub->s_map.img_s_map = mlx_new_image(cub->s_map.mlx_s_map, WIDTH, HEIGHT);
-	cub->perp_wall_dist = 0;
-	ray_casting(cub);
-	map_background(cub);
-	draw_s_map(cub);
-	dda(cub->direction, cub, create_rgb(0, 255, 0));
-	mlx_image_to_window(cub->s_map.mlx_s_map, cub->s_map.img_s_map, 0, 0);
+	move_speed = SPEED * cub->mlx.mlx_handle->delta_time;
+	new_pos.x = cub->pos.x + velo.x * move_speed;
+	new_pos.y = cub->pos.y + velo.y * move_speed;
+	wall_coll(cub, new_pos, map_cords);
 }
 
 static t_vec	vec_rotation(t_vec vec, double theta)
@@ -134,6 +48,19 @@ static t_vec	vec_rotation(t_vec vec, double theta)
 	return (prime_vec);
 }
 
+static void	rotation(t_cub *cub)
+{
+	if (cub->pressed_down.turn_left_right)
+	{
+		cub->direction = vec_rotation(cub->direction,
+				cub->pressed_down.turn_left_right * ROT_ANG
+				* cub->mlx.mlx_handle->delta_time);
+		cub->cam_plane = vec_rotation(cub->cam_plane,
+				cub->pressed_down.turn_left_right * ROT_ANG
+				* cub->mlx.mlx_handle->delta_time);
+	}
+}
+
 void	loop_hook(void *v_cub)
 {
 	t_cub	*cub;
@@ -141,27 +68,19 @@ void	loop_hook(void *v_cub)
 	int		theta;
 
 	cub = (t_cub *)v_cub;
-//-------------------------------
-
-	if (cub->start == 0)
-		return ;
-//-------------------------------
-
-	if (cub->pressed_down.turn_left_right)
-	{
-		cub->direction = vec_rotation(cub->direction,
-				cub->pressed_down.turn_left_right * ROT_ANG * cub->s_map.mlx_s_map->delta_time);
-		cub->cam_plane = vec_rotation(cub->cam_plane,
-				cub->pressed_down.turn_left_right * ROT_ANG * cub->s_map.mlx_s_map->delta_time);
-	}
+	rotation(cub);
 	theta = cub->pressed_down.left_right * 90;
 	if (cub->pressed_down.frwd_bckwd && cub->pressed_down.left_right)
 		theta = theta + cub->pressed_down.frwd_bckwd * theta / 2;
 	else if (cub->pressed_down.frwd_bckwd == 1)
 		theta = 180;
 	velocity = vec_rotation(cub->direction, theta);
-	if (cub->pressed_down.frwd_bckwd != -1 && theta == 0)
-		move_process(cub, NULL);
-	else
-		move_process(cub, &velocity);
+	if (!(cub->pressed_down.frwd_bckwd != -1 && theta == 0))
+		move_process(cub, velocity);
+	if (fill_window(cub))
+	{
+		mlx_delete_image(cub->mlx.mlx_handle, cub->mlx.img);
+		free_cub(cub);
+		exit(-1);
+	}
 }

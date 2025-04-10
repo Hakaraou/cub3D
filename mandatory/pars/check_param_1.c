@@ -6,7 +6,7 @@
 /*   By: hakaraou <hakaraou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 19:30:58 by hakaraou          #+#    #+#             */
-/*   Updated: 2024/09/25 16:13:55 by hakaraou         ###   ########.fr       */
+/*   Updated: 2024/11/21 19:18:15 by hakaraou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ static int	check_empty(t_cub *cub, size_t ln, size_t col)
 {
 	if (ln == 0 || ln == cub->height - 1 || col == 0 || col == cub->width - 1)
 		return (-1);
-	if (cub->map[ln - 1][col].value == M_VOID)
+	if (cub->map[ln - 1][col] == M_VOID)
 		return (-1);
-	if (cub->map[ln + 1][col].value == M_VOID)
+	if (cub->map[ln + 1][col] == M_VOID)
 		return (-1);
-	if (cub->map[ln][col - 1].value == M_VOID)
+	if (cub->map[ln][col - 1] == M_VOID)
 		return (-1);
-	if (cub->map[ln][col + 1].value == M_VOID)
+	if (cub->map[ln][col + 1] == M_VOID)
 		return (-1);
 	return (0);
 }
@@ -40,18 +40,17 @@ int	pars_map(t_cub *cub)
 		col = -1;
 		while (++col < cub->width)
 		{
-			if ((cub->map[ln][col].value == M_FLOOR
-				|| cub->map[ln][col].value == M_PLAYER)
+			if (is_non_empty(cub->map[ln][col])
 				&& check_empty(cub, ln, col) == -1)
-				return (ft_putendl_fd("ERROR:\n\tinvalid wall", 2), -1);
-			if (cub->map[ln][col].value == M_PLAYER)
+				return (ft_putendl_fd("Error:\ninvalid wall", 2), -1);
+			if (cub->map[ln][col] == M_PLAYER)
 			{
 				p++;
-				cub->map[ln][col].value = M_FLOOR;
+				cub->map[ln][col] = M_FLOOR;
 			}
 		}
 	}
 	if (p != 1)
-		return (ft_putendl_fd("ERROR:\n\tnumber of player", 2), -1);
+		return (ft_putendl_fd("Error:\nnumber of player", 2), -1);
 	return (0);
 }
